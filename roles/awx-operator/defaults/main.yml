@@ -1,0 +1,7 @@
+---
+
+git_clone_destination_directory: "{{ ansible_user_dir }}"
+
+awx_namespace: awx
+
+update_awx_release: false

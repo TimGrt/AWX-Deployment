@@ -1,0 +1,9 @@
+---
+
+- name: Deploy AWX on minikube
+  hosts: target
+  roles:
+    - kubernetes-bootstrap
+  #  - minikube
+  #  - kubectl
+  #  - awx-operator

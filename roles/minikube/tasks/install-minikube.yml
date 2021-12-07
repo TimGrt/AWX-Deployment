@@ -1,0 +1,18 @@
+---
+
+- name: Ensure Memory cgroup is enabled
+  ansible.builtin.stat:
+    path: /sys/fs/cgroup/memory
+  become: true
+
+- name: Get latest Minikube RPM package
+  ansible.builtin.get_url:
+    url: "https://storage.googleapis.com/minikube/releases/latest/minikube-latest.{{ ansible_architecture }}.rpm"
+    dest: "{{ minikube_download_directory }}/minikube-latest.{{ ansible_architecture }}.rpm"
+    mode: '0755'
+
+- name: Install Minikube RPM package
+  ansible.builtin.package:
+    name: "{{ minikube_download_directory }}/minikube-latest.{{ ansible_architecture }}.rpm"
+    state: present
+  become: true

@@ -1,0 +1,6 @@
+---
+
+- name: reboot
+  ansible.builtin.reboot:
+    msg: "Reboot initiated by Ansible"
+  become: true

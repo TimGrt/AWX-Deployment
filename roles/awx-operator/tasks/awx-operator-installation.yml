@@ -1,0 +1,40 @@
+---
+# - name: Install dependencies
+#   ansible.builtin.package:
+#     name:
+#       - git
+#       - make
+#     state: present
+#   become: true
+
+- name: Get latest AWX operator release
+  community.general.github_release:
+    repo: awx-operator
+    user: ansible
+    action: latest_release
+  register: awx_latest_release
+  delegate_to: localhost
+
+- name: Checkout AWX operator release {{ awx_latest_release.tag }}
+  ansible.builtin.git:
+    repo: https://github.com/ansible/awx-operator.git
+    dest: "{{ git_clone_destination_directory }}/awx-operator-{{ awx_latest_release.tag }}"
+    version: "tags/{{ awx_latest_release.tag }}"
+    update: "{{ update_awx_release }}"
+  environment:
+    NAMESPACE: "{{ awx_namespace }}"
+
+- name: Get state of AWX operator deployment
+  kubernetes.core.k8s_info:
+    kind: Deployment
+    name: awx-operator-controller-manager
+    namespace: "{{ awx_namespace }}"
+  register: awx_operator_deployment_info
+
+- debug: var=awx_operator_deployment_info
+
+- name: Execute make file
+  community.general.make:
+    chdir: "{{ git_clone_destination_directory }}/awx-operator-{{ awx_latest_release.tag }}"
+    make: /usr/bin/make
+    target: deploy

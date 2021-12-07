@@ -1,0 +1,45 @@
+---
+
+- name: Install required packages for Docker CE
+  ansible.builtin.yum:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+    update_cache: true
+    state: present
+  become: true
+
+- name: Get Docker CE Repository
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+  become: true
+
+- name: Install Docker CE
+  ansible.builtin.yum:
+    name:
+      - containerd
+      - docker-ce
+      - docker-ce-cli
+  become: true
+
+- name: Ensure Docker directory exists
+  ansible.builtin.file:
+    path: /etc/docker
+    state: directory
+    mode: 0755
+
+- name: Copy Docker daemon config
+  ansible.builtin.copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+    mode: 0644
+  become: true
+
+- name: Ensure Docker Service directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    mode: 0755
+  become: true

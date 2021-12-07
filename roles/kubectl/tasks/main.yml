@@ -1,0 +1,100 @@
+---
+
+- name: Get latest release of kubectl
+  ansible.builtin.uri:
+    url: https://storage.googleapis.com/kubernetes-release/release/stable.txt
+    return_content: true
+  register: kubectl_latest_release_version
+  check_mode: false
+
+- name: Ensure {{ download_directory }} exists
+  ansible.builtin.file:
+    path: "{{ download_directory }}"
+    state: directory
+    mode: 0755
+
+- name: Download kubectl {{ kubectl_latest_release_version.content }} binary to {{ download_directory }} and make it executable
+  ansible.builtin.get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/{{ kubectl_latest_release_version.content }}/bin/linux/amd64/kubectl
+    dest: "{{ download_directory }}"
+    mode: +x
+
+- name: Check for existing kube config file
+  ansible.builtin.stat:
+    path: "{{ minikube_configs_location }}/.kube/config"
+  register: kube_config_state
+
+- name: Get kube config file content from minikube node
+  ansible.builtin.slurp:
+    src: ~/.kube/config
+  register: kubeconfig
+  delegate_to: "{{ groups['target'][0] }}"
+  when: not kube_config_state.stat.exists
+
+- name: Ensure .kube folder exists
+  ansible.builtin.file:
+    path: "{{ minikube_configs_location }}/.kube"
+    state: directory
+    mode: 0755
+
+- name: Write kube config file content to localhost
+  ansible.builtin.copy:
+    dest: "{{ minikube_configs_location }}/.kube/config"
+    content: "{{ kubeconfig['content'] | b64decode }}"
+    mode: 0644
+  when: not kube_config_state.stat.exists
+
+- name: Get CA certificate content from minikube node
+  ansible.builtin.slurp:
+    src: ~/.minikube/ca.crt
+  register: minikube_ca_cert
+  delegate_to: "{{ groups['target'][0] }}"
+
+- name: Get client certificate content from minikube node
+  ansible.builtin.slurp:
+    src: ~/.minikube/profiles/minikube/client.crt
+  register: minikube_client_cert
+  delegate_to: "{{ groups['target'][0] }}"
+
+- name: Get client key content from minikube node
+  ansible.builtin.slurp:
+    src: ~/.minikube/profiles/minikube/client.key
+  register: minikube_client_key
+  delegate_to: "{{ groups['target'][0] }}"
+
+- name: Ensure .minikube folder exists
+  ansible.builtin.file:
+    path: "{{ minikube_configs_location }}/.minikube"
+    state: directory
+    mode: 0750
+
+- name: Write certificates and key content to localhost
+  ansible.builtin.copy:
+    dest: "{{ item.file }}"
+    content: "{{ item.content }}"
+    mode: 0640
+  loop:
+    - file: "{{ minikube_configs_location }}/.minikube/ca.crt"
+      content: "{{ minikube_ca_cert['content'] | b64decode }}"
+    - file: "{{ minikube_configs_location }}/.minikube/client.crt"
+      content: "{{ minikube_client_cert['content'] | b64decode }}"
+    - file: "{{ minikube_configs_location }}/.minikube/client.key"
+      content: "{{ minikube_client_key['content'] | b64decode }}"
+  loop_control:
+    label: "{{ item.file }}"
+
+- name: Adjust path of CA certificate, client certificate and client key in kube config file
+  ansible.builtin.lineinfile:
+    path: "{{ minikube_configs_location }}/.kube/config"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backrefs: true
+  loop:
+    - regexp: "^(.*)certificate-authority:"
+      line: "\\1certificate-authority: {{ minikube_configs_location }}/.minikube/ca.crt"
+    - regexp: "^(.*)client-certificate:"
+      line: "\\1client-certificate: {{ minikube_configs_location }}/.minikube/client.crt"
+    - regexp: "^(.*)client-key:"
+      line: "\\1client-key: {{ minikube_configs_location }}/.minikube/client.key"
+  loop_control:
+    label: "{{ item.line }}"

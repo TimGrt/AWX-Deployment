@@ -1,0 +1,38 @@
+---
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    update_cache: true
+    state: present
+  become: true
+
+- name: Get official Docker GPG key content
+  ansible.builtin.uri:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    return_content: true
+  register: docker_gpg_key
+
+- name: Store Docker GPG key in 
+  ansible.builtin.copy:
+    content: "{{ docker_gpg_key.content }}"
+    dest: /usr/share/keyrings/docker-archive-keyring.gpg
+    mode: 0644
+  become: true
+
+- name: Ensure docker group exists
+  ansible.builtin.group:
+    name: docker
+    state: present
+  become: true
+
+- name: Add user {{ ansible_user }} to docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: "docker"
+    append: true
+  become: true

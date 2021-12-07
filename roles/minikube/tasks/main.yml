@@ -1,0 +1,4 @@
+---
+
+- import_tasks: install-minikube.yml
+- import_tasks: start-minikube.yml

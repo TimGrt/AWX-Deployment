@@ -1,0 +1,6 @@
+---
+
+minikube_state: started
+
+minikube_additional_start_parameter: "--cpus=4 --memory=6g --addons=ingress"
+awx_kubernetes_namespace: awx-demo

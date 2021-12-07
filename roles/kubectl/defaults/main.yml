@@ -1,0 +1,5 @@
+---
+
+download_directory: ~/.local/bin
+
+minikube_configs_location: "{{ ansible_user_dir }}"

@@ -1,0 +1,4 @@
+---
+
+- import_tasks: awx-operator-installation.yml
+  tags: test
