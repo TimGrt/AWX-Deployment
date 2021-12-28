@@ -10,6 +10,8 @@
 - name: Start minikube
   ansible.builtin.command:
     cmd: "minikube start {{ minikube_additional_start_parameter }}"
+  async: 600
+  poll: 0
   when:
     - minikube_state == "started"
     - '"host: Stopped" in status.stdout_lines or "not found" in status.stdout'
@@ -26,5 +28,3 @@
     (status.stdout | from_json).Host == "Running" and
     (status.stdout | from_json).Kubeconfig == "Configured" and
     (status.stdout | from_json).Kubelet == "Running"
-  when:
-    - minikube_state == "started"

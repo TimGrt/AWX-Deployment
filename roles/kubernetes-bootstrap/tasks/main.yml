@@ -1,4 +1,5 @@
 ---
 
 - import_tasks: docker-prerequisites.yml
+- import_tasks: start-docker-runtime.yml
 

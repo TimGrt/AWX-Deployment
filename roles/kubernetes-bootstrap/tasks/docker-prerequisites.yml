@@ -11,17 +11,26 @@
     state: present
   become: true
 
-- name: Get official Docker GPG key content
-  ansible.builtin.uri:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    return_content: true
-  register: docker_gpg_key
+- name: Store Docker GPG key in /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg
+  ansible.builtin.shell:
+    cmd: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg"
+    creates: /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg
+  become: true
 
-- name: Store Docker GPG key in 
-  ansible.builtin.copy:
-    content: "{{ docker_gpg_key.content }}"
-    dest: /usr/share/keyrings/docker-archive-keyring.gpg
-    mode: 0644
+- name: Add Docker stable repository
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    state: present
+    filename: docker
+  become: true
+
+- name: Install Docker engine
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
   become: true
 
 - name: Ensure docker group exists

@@ -1,11 +1,20 @@
 ---
-# - name: Install dependencies
-#   ansible.builtin.package:
-#     name:
-#       - git
-#       - make
-#     state: present
-#   become: true
+
+- name: Install package dependencies
+  ansible.builtin.apt:
+    name:
+      - git
+      - make
+      - python3-pip
+    state: present
+  become: true
+
+- name: Install python dependencies
+  ansible.builtin.pip:
+    name:
+      - github3.py
+      - openshift
+    state: present
 
 - name: Get latest AWX operator release
   community.general.github_release:
@@ -13,7 +22,6 @@
     user: ansible
     action: latest_release
   register: awx_latest_release
-  delegate_to: localhost
 
 - name: Checkout AWX operator release {{ awx_latest_release.tag }}
   ansible.builtin.git:
@@ -21,8 +29,6 @@
     dest: "{{ git_clone_destination_directory }}/awx-operator-{{ awx_latest_release.tag }}"
     version: "tags/{{ awx_latest_release.tag }}"
     update: "{{ update_awx_release }}"
-  environment:
-    NAMESPACE: "{{ awx_namespace }}"
 
 - name: Get state of AWX operator deployment
   kubernetes.core.k8s_info:
@@ -31,10 +37,43 @@
     namespace: "{{ awx_namespace }}"
   register: awx_operator_deployment_info
 
-- debug: var=awx_operator_deployment_info
-
-- name: Execute make file
+- name: Execute make file when AWX deployment is not present
   community.general.make:
     chdir: "{{ git_clone_destination_directory }}/awx-operator-{{ awx_latest_release.tag }}"
-    make: /usr/bin/make
     target: deploy
+  environment:
+    NAMESPACE: "{{ awx_namespace }}"
+  when: awx_operator_deployment_info.resources | length == 0 
+
+- name: Wait for running state of awx-operator-controller-manager pods
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ awx_namespace }}"
+    label_selectors:
+      - control-plane = controller-manager
+    wait: yes
+    wait_sleep: 5
+    wait_timeout: 120
+  register: awx_operator_controller_manager_pods
+
+- debug: var=awx_operator_controller_manager_pods
+- name: Deploy AWX instance and expose via nodeport
+  kubernetes.core.k8s:
+    namespace: "{{ awx_namespace }}"
+    definition:
+      apiVersion: awx.ansible.com/v1beta1
+      kind: AWX
+      metadata:
+        name: "{{ awx_instance_name }}"
+      spec:
+        service_type: nodeport
+    state: present
+
+- name: Get state of Pods
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ awx_namespace }}"
+  register: pods
+
+#- debug: var=pods
+    

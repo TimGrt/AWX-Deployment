@@ -90,11 +90,11 @@
     line: "{{ item.line }}"
     backrefs: true
   loop:
-    - regexp: "^(.*)certificate-authority:"
-      line: "\\1certificate-authority: {{ minikube_configs_location }}/.minikube/ca.crt"
-    - regexp: "^(.*)client-certificate:"
-      line: "\\1client-certificate: {{ minikube_configs_location }}/.minikube/client.crt"
-    - regexp: "^(.*)client-key:"
-      line: "\\1client-key: {{ minikube_configs_location }}/.minikube/client.key"
+    - regexp: '^(.*)certificate-authority:'
+      line: '\1certificate-authority: {{ minikube_configs_location }}/.minikube/ca.crt'
+    - regexp: '^(.*)client-certificate:'
+      line: '\1client-certificate: {{ minikube_configs_location }}/.minikube/client.crt'
+    - regexp: '^(.*)client-key:'
+      line: '\1client-key: {{ minikube_configs_location }}/.minikube/client.key'
   loop_control:
     label: "{{ item.line }}"

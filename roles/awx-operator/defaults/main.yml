@@ -2,6 +2,7 @@
 
 git_clone_destination_directory: "{{ ansible_user_dir }}"
 
-awx_namespace: awx
+awx_namespace: awx-demo
+awx_instance_name: awx-demo
 
 update_awx_release: false
