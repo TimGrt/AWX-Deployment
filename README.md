@@ -1,6 +1,3 @@
-pip3 install github3.py
-pip3 install openshift
+# AWX in Minikube
 
-apt-get install python-is-python3
-apt-get install git
-apt-git install make
+This playbook installs AWX on a Minikube instance running on an Ubuntu host.
