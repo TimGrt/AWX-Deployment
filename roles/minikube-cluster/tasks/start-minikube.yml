@@ -2,28 +2,27 @@
 - name: Get minikube status
   ansible.builtin.command:
     cmd: minikube status
-  register: status
+  register: minikube_status
   changed_when: false
   failed_when: false
 
 - name: Start minikube
   ansible.builtin.command:
     cmd: minikube start {{ minikube_additional_start_parameter }}
-  async: 600
+  async: 1200
   poll: 0
-  when:
-    - minikube_state == "started"
-    - '"host: Stopped" in status.stdout_lines or "not found" in status.stdout'
+  when: minikube_status.rc != 0
 
-- name: Wait for fully started minikube instance (timeout set to 10 minutes)
+- name: Wait for fully started minikube instance (timeout set to 20 minutes)
   ansible.builtin.command:
     cmd: minikube status -o json
-  register: status
+  register: minikube_status
   changed_when: false
   retries: 60
   delay: 10
   until: >
-    (status.stdout | from_json).APIServer == "Running" and
-    (status.stdout | from_json).Host == "Running" and
-    (status.stdout | from_json).Kubeconfig == "Configured" and
-    (status.stdout | from_json).Kubelet == "Running"
+    minikube_status.rc == 0 and
+    (minikube_status.stdout | from_json).APIServer == "Running" and
+    (minikube_status.stdout | from_json).Host == "Running" and
+    (minikube_status.stdout | from_json).Kubeconfig == "Configured" and
+    (minikube_status.stdout | from_json).Kubelet == "Running"

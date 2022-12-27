@@ -1,4 +1,0 @@
----
-- name: Handler_source_bashrc
-  ansible.builtin.command:
-    cmd: source .bashrc

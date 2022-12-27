@@ -2,7 +2,7 @@
 # Kubectl is already part of the minikube installation, creating an alias for easier usage
 - name: Create alias for kubectl
   ansible.builtin.template:
-    src: bash-aliases.j2
-    dest: "{{ ansible_user_dir }}/.bash-aliases"
-    mode: 0644
-  notify: Handler_source_bashrc
+    src: kubectl-alias-binary.j2
+    dest: /usr/local/bin/kubectl
+    mode: 0755
+  become: true
