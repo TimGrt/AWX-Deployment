@@ -9,7 +9,7 @@
   ansible.builtin.get_url:
     url: "https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb"
     dest: "{{ minikube_download_directory }}/minikube_latest_amd64.deb"
-    mode: '0755'
+    mode: 0755
 
 - name: Install Minikube Debian package
   ansible.builtin.apt:
