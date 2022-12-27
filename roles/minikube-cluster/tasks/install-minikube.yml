@@ -1,5 +1,4 @@
 ---
-
 - name: Ensure Memory cgroup is enabled
   ansible.builtin.stat:
     path: /sys/fs/cgroup/memory
@@ -7,7 +6,7 @@
 
 - name: Get latest Minikube Debian package
   ansible.builtin.get_url:
-    url: "https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb"
+    url: https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
     dest: "{{ minikube_download_directory }}/minikube_latest_amd64.deb"
     mode: 0755
 

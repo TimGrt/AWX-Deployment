@@ -1,7 +1,6 @@
 ---
-
 minikube_download_directory: "{{ ansible_user_dir }}"
 
 minikube_state: installed
 
-minikube_additional_start_parameter: ""
+minikube_additional_start_parameter: "--cpus=4 --memory=6g --addons=ingress"

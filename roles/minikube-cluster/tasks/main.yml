@@ -1,4 +1,4 @@
 ---
-
-- import_tasks: install-minikube.yml
-- import_tasks: start-minikube.yml
+- ansible.builtin.import_tasks: install-minikube.yml # noqa name[missing]
+- ansible.builtin.import_tasks: start-minikube.yml # noqa name[missing]
+- ansible.builtin.import_tasks: kubectl.yml # noqa name[missing]

@@ -1,5 +1,4 @@
 ---
-
 - name: Get minikube status
   ansible.builtin.command:
     cmd: minikube status
@@ -9,7 +8,7 @@
 
 - name: Start minikube
   ansible.builtin.command:
-    cmd: "minikube start {{ minikube_additional_start_parameter }}"
+    cmd: minikube start {{ minikube_additional_start_parameter }}
   async: 600
   poll: 0
   when:
@@ -18,7 +17,7 @@
 
 - name: Wait for fully started minikube instance (timeout set to 10 minutes)
   ansible.builtin.command:
-    cmd: "minikube status -o json"
+    cmd: minikube status -o json
   register: status
   changed_when: false
   retries: 60
