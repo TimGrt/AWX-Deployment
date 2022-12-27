@@ -1,0 +1,37 @@
+---
+
+# Bootstraps a Ubuntu VM with an Ansible user, copies the key of the current user and upgrades all packages
+- name: Bootstrap playbook, run it with '-e ansible_user=<default-user> --ask-pass --ask-become-pass'
+  hosts: all
+  become: true
+  vars:
+    automation_user: ansible
+  tasks:
+    - name: Create User for further Ansible automation
+      ansible.builtin.user:
+        name: "{{ automation_user }}"
+        shell: /bin/bash
+        comment: "User for Ansible automation tasks"
+
+    - name: Enable sudo permissions for Ansible user
+      ansible.builtin.copy:
+        content: "{{ automation_user }} ALL=(ALL) NOPASSWD:ALL"
+        dest: /etc/sudoers.d/ansible
+        validate: /usr/sbin/visudo -cf %s
+        mode: 0644
+
+    - name: Ensure public key for current User exists
+      ansible.builtin.stat:
+        path: ~/.ssh/id_rsa.pub
+      delegate_to: localhost
+
+    - name: Add public key of current User to authorized_keys of Ansible User
+      ansible.posix.authorized_key:
+        user: "{{ automation_user }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+    - name: Upgrade all packages  # noqa package-latest
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
