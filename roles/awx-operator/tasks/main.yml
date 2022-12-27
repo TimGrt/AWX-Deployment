@@ -1,4 +1,21 @@
 ---
 
-- import_tasks: awx-operator-installation.yml
-  tags: test
+- ansible.builtin.import_tasks: prerequisites.yml  # noqa name[missing]
+  tags:
+    - prepare
+    - awx-operator
+
+- ansible.builtin.import_tasks: kustomize.yml  # noqa name[missing]
+  tags:
+    - kustomize
+    - awx-operator
+
+- ansible.builtin.import_tasks: awx-operator-installation.yml  # noqa name[missing]
+  tags:
+    - operator-install
+    - awx-operator
+
+- ansible.builtin.import_tasks: awx-installation.yml  # noqa name[missing]
+  tags:
+    - awx-install
+    - awx-operator

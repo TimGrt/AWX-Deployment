@@ -1,0 +1,28 @@
+---
+
+- name: Deploy AWX instance and expose via nodeport
+  kubernetes.core.k8s:
+    namespace: "{{ awx_namespace }}"
+    definition:
+      apiVersion: awx.ansible.com/v1beta1
+      kind: AWX
+      metadata:
+        name: "{{ awx_instance_name }}"
+      spec:
+        service_type: nodeport
+    state: present
+
+- name: Get state of Pods
+  kubernetes.core.k8s_info:
+    kind: Pod
+    namespace: "{{ awx_namespace }}"
+  register: pods
+
+- name: Wait for running state of AWX deployment (timeout set to 10 minutes)
+  kubernetes.core.k8s_info:
+    kind: Deployment
+    namespace: "{{ awx_namespace }}"
+    name: "{{ awx_instance_name }}"
+    wait: true
+    wait_sleep: 10
+    wait_timeout: 600
