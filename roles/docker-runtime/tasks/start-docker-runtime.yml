@@ -1,6 +1,4 @@
 ---
-
-
 - name: Start Docker daemon and enable on boot
   ansible.builtin.systemd:
     name: docker

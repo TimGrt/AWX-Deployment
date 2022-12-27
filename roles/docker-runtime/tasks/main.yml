@@ -1,5 +1,3 @@
 ---
-
-- import_tasks: docker-prerequisites.yml
-- import_tasks: start-docker-runtime.yml
-
+- ansible.builtin.import_tasks: docker-prerequisites.yml # noqa name[missing]
+- ansible.builtin.import_tasks: start-docker-runtime.yml # noqa name[missing]
