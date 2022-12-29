@@ -13,3 +13,8 @@
   tags:
     - kubectl
     - minikube
+
+- ansible.builtin.import_tasks: delete-minikube-cluster.yml # noqa name[missing]
+  when: '"delete-minikube" in ansible_run_tags'
+  tags:
+    - delete-minikube

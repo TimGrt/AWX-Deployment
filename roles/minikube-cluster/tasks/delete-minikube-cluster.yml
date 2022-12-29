@@ -1,0 +1,7 @@
+---
+
+- name: Delete minikube cluster
+  ansible.builtin.command:
+    cmd: minikube delete --purge=true
+    removes: "{{ ansible_user_dir }}/.minikube"
+  

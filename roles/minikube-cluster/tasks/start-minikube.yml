@@ -9,20 +9,30 @@
 - name: Start minikube
   ansible.builtin.command:
     cmd: minikube start {{ minikube_additional_start_parameter }}
-  async: 1200
+  async: 600
   poll: 0
+  register: minikube_start
   when: minikube_status.rc != 0
 
-- name: Wait for fully started minikube instance (timeout set to 20 minutes)
+- name: Wait for fully started minikube instance (timeout set to 10 minutes) # noqa args[module]
+  ansible.builtin.async_status:
+    jid: '{{ minikube_start.ansible_job_id }}'
+  register: job_result
+  until: job_result.finished
+  retries: 60
+  delay: 10
+  when:
+    - minikube_start is defined
+    - minikube_start.ansible_job_id is defined
+
+- name: Ensure minikube instance is running
   ansible.builtin.command:
     cmd: minikube status -o json
   register: minikube_status
   changed_when: false
-  retries: 60
-  delay: 10
-  until: >
-    minikube_status.rc == 0 and
-    (minikube_status.stdout | from_json).APIServer == "Running" and
-    (minikube_status.stdout | from_json).Host == "Running" and
-    (minikube_status.stdout | from_json).Kubeconfig == "Configured" and
-    (minikube_status.stdout | from_json).Kubelet == "Running"
+  failed_when:
+    - minikube_status.rc != 0
+    - (minikube_status.stdout | from_json).APIServer != "Running"
+    - (minikube_status.stdout | from_json).Host != "Running"
+    - (minikube_status.stdout | from_json).Kubeconfig != "Configured"
+    - (minikube_status.stdout | from_json).Kubelet != "Running"
