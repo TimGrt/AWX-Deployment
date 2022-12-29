@@ -12,12 +12,6 @@
         service_type: nodeport
     state: present
 
-- name: Get state of Pods
-  kubernetes.core.k8s_info:
-    kind: Pod
-    namespace: "{{ awx_namespace }}"
-  register: pods
-
 - name: Wait for running state of AWX deployment (timeout set to 10 minutes)
   kubernetes.core.k8s_info:
     kind: Deployment
@@ -26,3 +20,24 @@
     wait: true
     wait_sleep: 10
     wait_timeout: 600
+
+- name: Wait for availability of AWX UI (timeout set to 2 minutes)
+  ansible.builtin.uri:
+    url: http://{{ ansible_default_ipv4.address }}:30080
+  register: awx_ui_availability
+  until: awx_ui_availability.status == 200
+  retries: 12
+  delay: 10
+
+- name: Get AWX admin secret
+  kubernetes.core.k8s_info:
+    kind: Secret
+    namespace: "{{ awx_namespace }}"
+    name: "{{ awx_instance_name }}-admin-password"
+  register: admin_secret
+
+- name: Output login info
+  ansible.builtin.debug:
+    msg: |
+      AWX UI is available at 'http://{{ ansible_default_ipv4.address }}:30080'
+      Login with username 'admin' and password '{{ admin_secret['resources'][0]['data']['password'] | b64decode }}'
