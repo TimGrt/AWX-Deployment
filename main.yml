@@ -1,5 +1,5 @@
 ---
-      
+
 - name: Deploy AWX to minikube
   hosts: target
   roles:
