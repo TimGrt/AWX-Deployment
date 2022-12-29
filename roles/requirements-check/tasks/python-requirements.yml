@@ -1,0 +1,28 @@
+---
+
+- name: Check for requirements.txt file
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/requirements.txt"
+  register: requirements_txt_file
+
+- name: Compare installed and required Python packages
+  when: requirements_txt_file.stat.exists
+  block:
+    - name: Get packages installed with Python package manager
+      ansible.builtin.command:
+        cmd: pip3 list --format json
+      changed_when: false
+      register: pip3_list_output
+
+    - name: Ensure required Python packages are installed
+      ansible.builtin.assert:
+        that:
+          - (required_python_packages_list | difference(installed_python_packages_list)) | length == 0
+        quiet: true
+        fail_msg: |
+          Required Python packages(s) are missing!
+          The following packages are not installed: {{ (required_python_packages_list | difference(installed_python_packages_list)) | join(', ') }}
+          Install Python dependencies with 'pip3 install -r requirements.txt'
+      vars:
+        installed_python_packages_list: "{{ pip3_list_output.stdout | from_json | map(attribute='name') }}"
+        required_python_packages_list: "{{ lookup('file', playbook_dir + '/requirements.txt').splitlines() }}"

@@ -1,0 +1,29 @@
+---
+
+- name: Check for requirements.yml file
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/requirements.yml"
+  register: requirements_yml_file
+
+- name: Compare installed and required Python packages
+  when: requirements_yml_file.stat.exists
+  block:
+    - name: Get installed collections
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection list --format json
+      changed_when: false
+      register: installed_collections_output
+
+    - name: Ensure required collection are installed
+      ansible.builtin.assert:
+        that:
+          - (required_collections_list | difference(installed_collections_list)) | length == 0
+        quiet: true
+        fail_msg: |
+          Required collection(s) are missing!
+          The following collections are not installed: {{ (required_collections_list | difference(installed_collections_list)) | join(', ') }}
+          Install Galaxy dependencies with 'ansible-galaxy collection install -r requirements.yml'
+      vars:
+        default_collections_path: "{{ (installed_collections_output.stdout | from_json | flatten)[0] }}"
+        installed_collections_list: "{{ (installed_collections_output.stdout | from_json)[default_collections_path] | flatten }}"
+        required_collections_list: "{{ (lookup('file', playbook_dir + '/requirements.yml') | from_yaml)['collections'] }}"
