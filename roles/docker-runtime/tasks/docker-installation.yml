@@ -44,3 +44,7 @@
     groups: docker
     append: true
   become: true
+  notify: Reset_ssh_connection_handler
+
+- name: Run handlers
+  ansible.builtin.meta: flush_handlers
