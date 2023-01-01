@@ -1,6 +1,6 @@
 # AWX in Minikube
 
-[![Ansible Lint](https://github.com/TimGrt/AWX-on-Minikube/actions/workflows/ci.yml/badge.svg)](https://github.com/TimGrt/AWX-on-Minikube/actions/workflows/ci.yml)
+[![Ansible Lint](https://github.com/TimGrt/AWX-on-Minikube/actions/workflows/ci.yml/badge.svg)](https://github.com/TimGrt/AWX-on-Minikube/actions/workflows/ci.yml) [![CodeFactor](https://www.codefactor.io/repository/github/timgrt/awx-on-minikube/badge)](https://www.codefactor.io/repository/github/timgrt/awx-on-minikube)
 
 This playbook installs AWX on a Minikube instance running on an Ubuntu host.
 
