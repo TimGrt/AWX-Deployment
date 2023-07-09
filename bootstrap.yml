@@ -18,7 +18,7 @@
         content: "{{ automation_user }} ALL=(ALL) NOPASSWD:ALL"
         dest: /etc/sudoers.d/ansible
         validate: /usr/sbin/visudo -cf %s
-        mode: 0644
+        mode: "0644"
 
     - name: Ensure public key for current User exists
       ansible.builtin.stat:

@@ -1,6 +1,9 @@
 ---
 
 offline: true
-
+quiet: true
 skip_list:
   - yaml[line-length]
+  - role-name
+exclude_paths:
+  - .github/

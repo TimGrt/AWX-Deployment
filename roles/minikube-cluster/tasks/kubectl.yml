@@ -4,5 +4,5 @@
   ansible.builtin.template:
     src: kubectl-alias-binary.j2
     dest: /usr/local/bin/kubectl
-    mode: 0755
+    mode: "0755"
   become: true
