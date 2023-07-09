@@ -6,11 +6,11 @@
   register: kustomize_releases
   check_mode: false
 
-- name: Unarchive newest release of kustomize to /usr/local/bin
+- name: Unarchive newest release of kustomize to /usr/local/bin  # noqa jinja[invalid]
   ansible.builtin.unarchive:
     src: https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/{{ kustomize_newest_version }}/kustomize_{{ kustomize_newest_version }}_linux_amd64.tar.gz
     dest: /usr/local/bin
     remote_src: true
   become: true
   vars:
-    kustomize_newest_version: "{{ kustomize_releases.json | json_query('[?contains(name, `kustomize`)].name') | first | regex_replace('^kustomize/(.*)$', '\\1' ) }}"  # noqa jinja[invalid]
+    kustomize_newest_version: "{{ kustomize_releases.json | json_query('[?contains(name, `kustomize`)].name') | first | regex_replace('^kustomize/(.*)$', '\\1') }}"
