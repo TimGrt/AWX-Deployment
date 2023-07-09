@@ -1,7 +1,15 @@
 ---
 
+- name: Check requirements
+  hosts: localhost
+  connection: local
+  roles:
+    - requirements-check
+
 - name: Deploy AWX to minikube
   hosts: target
+  vars:
+    exposed_node_port: 30080
   roles:
     - docker-runtime
     - minikube-cluster

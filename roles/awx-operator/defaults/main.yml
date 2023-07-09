@@ -3,6 +3,8 @@
 awx_namespace: awx
 awx_instance_name: awx-demo
 
+exposed_node_port: 30080
+
 kustomize_directory: "{{ ansible_user_dir }}"
 
 update_awx_release: false

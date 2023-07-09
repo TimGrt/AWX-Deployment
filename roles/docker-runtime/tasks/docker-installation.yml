@@ -12,7 +12,7 @@
 
 - name: Store Docker GPG key in /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg
   ansible.builtin.shell:
-    cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg  # noqa command-instead-of-module
+    cmd: set -o pipefail && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg  # noqa command-instead-of-module
     creates: /etc/apt/trusted.gpg.d/docker-archive-keyring.gpg
   become: true
 
