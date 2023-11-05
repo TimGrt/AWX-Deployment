@@ -1,0 +1,27 @@
+---
+
+- name: Create directory for AWX database
+  ansible.builtin.file:
+    path: "{{ awx_database_volume_host_path }}"
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Create persistant storage for AWX instance
+  kubernetes.core.k8s:
+    namespace: "{{ awx_namespace }}"
+    definition:
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: "{{ awx_database_volume_name }}"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        capacity:
+          storage: "{{ awx_database_volume_capacity }}"
+        storageClassName: awx-postgres-volume
+        hostPath:
+          path: "{{ awx_database_volume_host_path }}"
+    state: present
