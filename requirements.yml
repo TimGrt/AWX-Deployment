@@ -2,6 +2,6 @@
 
 collections:
   - ansible.posix
+  - community.crypto
   - community.general
   - kubernetes.core
-  - community.crypto
