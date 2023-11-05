@@ -1,0 +1,51 @@
+---
+
+- name: Get K3S installation script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: "{{ ansible_user_dir }}/k3s-install.sh"
+    mode: "0644"
+
+- name: Create directory for K3S configuration file
+  ansible.builtin.file:
+    path: /etc/rancher/k3s
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Deploy K3S configuration file
+  ansible.builtin.template:
+    src: k3s-config.yaml.j2
+    dest: /etc/rancher/k3s/config.yaml
+    mode: "0644"
+  become: true
+
+- name: Execute K3S install script
+  ansible.builtin.command:
+    cmd: sh k3s-install.sh
+    chdir: "{{ ansible_user_dir }}"
+    creates: /usr/local/bin/k3s
+  become: true
+
+- name: Copy k3s.yaml to default kubeconfig location
+  ansible.builtin.copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "{{ ansible_user_dir }}/.kube/config"
+    remote_src: true
+    mode: "0644"
+
+- name: Get state of coredns deployment and wait until it is ready
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Deployment
+    name: coredns
+    namespace: kube-system
+    wait: true
+
+- name: Get state of traefik deployment and wait until it is ready
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Deployment
+    name: traefik
+    namespace: kube-system
+    wait: true
