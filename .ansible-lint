@@ -1,6 +1,5 @@
 ---
 
-offline: true
 quiet: true
 skip_list:
   - yaml[line-length]
