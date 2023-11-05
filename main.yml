@@ -13,4 +13,4 @@
   roles:
     - docker-runtime
     - minikube-cluster
-    - awx-operator
+    - awx

@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: {{ awx_namespace }}
+
+images:
+  - name: quay.io/ansible/awx-operator
+    newTag: {{ awx_operator_tag }}
+
+resources:
+  - github.com/ansible/awx-operator/config/default?ref={{ awx_operator_tag }}
+
+{% if service_type == 'ingress' %}
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+  - name: awx-secret-tls
+    type: kubernetes.io/tls
+    files:
+      - tls.key
+      - tls.crt
+{% endif %}

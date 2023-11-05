@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: check-merge-conflict
         name: Check for merge conflict markers
@@ -15,10 +15,10 @@ repos:
       - id: requirements-txt-fixer
         name: Sort entries in requirements.txt
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.23.2
+    rev: 0.27.1
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v6.17.2
+    rev: v6.21.1
     hooks:
       - id: ansible-lint

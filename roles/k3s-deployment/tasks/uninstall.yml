@@ -1,0 +1,12 @@
+---
+
+- name: Uninstall K3S
+  block:
+    - name: Execute K3S uninstall script # noqa no-changed-when
+      ansible.builtin.command:
+        cmd: /usr/local/bin/k3s-uninstall.sh
+  rescue:
+    - name: Uninstalling K3S failed
+      ansible.builtin.debug:
+        msg: "K3S uninstall script missing! Was K3S already uninstalled?"
+      when: ansible_failed_result.msg is search('No such file or directory')

@@ -1,0 +1,10 @@
+---
+
+- ansible.builtin.import_tasks: requirements.yml # noqa name[missing]
+
+- ansible.builtin.import_tasks: deployment.yml # noqa name[missing]
+
+- ansible.builtin.import_tasks: uninstall.yml # noqa name[missing]
+  when: '"uninstall" in ansible_run_tags'
+  tags:
+    - uninstall
