@@ -1,18 +1,27 @@
 ---
 
-- name: Install Python3 package manager
+- name: Install Python3 kubernetes package for module functionality
   ansible.builtin.package:
-    name: python3-pip
+    name: python3-kubernetes
     state: present
   become: true
 
-- name: Install kubernetes Python package for module functionality
-  ansible.builtin.pip:
-    name: kubernetes
-    state: present
+- name: Ensure Memory CGroup is available
+  ansible.builtin.stat:
+    path: /sys/fs/cgroup/memory.stat
+  register: memory_cgroup_file
+  failed_when: not memory_cgroup_file.stat.exists
 
 - name: Stop and disable firewalld
   ansible.builtin.service:
     name: firewalld
     state: stopped
     enabled: false
+  become: true
+  when: ansible_facts['distribution'] == "Red Hat"
+
+- name: Get K3S installation script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: "{{ ansible_user_dir }}/k3s-install.sh"
+    mode: "0644"

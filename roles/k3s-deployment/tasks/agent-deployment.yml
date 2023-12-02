@@ -1,0 +1,35 @@
+---
+
+- name: Get K3s server token from control plane node
+  ansible.builtin.slurp:
+    path: /var/lib/rancher/k3s/server/node-token
+  register: k3s_server_token_file
+  become: true
+  when: inventory_hostname in groups[k3s_server_group]
+  run_once: true
+
+- name: Execute install script to deploy K3s agent
+  ansible.builtin.command:
+    cmd: sh k3s-install.sh
+    chdir: "{{ ansible_user_dir }}"
+    creates: /usr/local/bin/k3s
+  become: true
+  environment:
+    K3S_URL: https://{{ hostvars[groups[k3s_server_group][0]]['ansible_host'] }}:6443
+    K3S_TOKEN: "{{ k3s_server_token_file.content | b64decode | trim }}"
+
+- name: Get info about K3s cluster nodes and wait until all report Ready status
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Node
+    name: "{{ item }}"
+    wait: true
+    wait_timeout: 5
+    wait_condition:
+      type: Ready
+  loop: "{{ groups['kubernetes_cluster'] }}"
+  loop_control:
+    label: Checking 'Ready' condition of {{ item }}
+  when: inventory_hostname in groups[k3s_server_group]
+  run_once: true
+  register: kubernetes_node_info

@@ -1,0 +1,6 @@
+---
+
+# Defining group aliases, overwrite these if your inventory groups differ
+# This prevents the need to overwrite the groups in the role itself
+k3s_server_group: kubernetes_control_plane
+k3s_agent_group: kubernetes_nodes
