@@ -1,11 +1,5 @@
 ---
 
-- name: Get K3S installation script
-  ansible.builtin.get_url:
-    url: https://get.k3s.io
-    dest: "{{ ansible_user_dir }}/k3s-install.sh"
-    mode: "0644"
-
 - name: Create directory for K3S configuration file
   ansible.builtin.file:
     path: /etc/rancher/k3s
@@ -20,12 +14,18 @@
     mode: "0644"
   become: true
 
-- name: Execute K3S install script
+- name: Execute install script to deploy K3s server
   ansible.builtin.command:
     cmd: sh k3s-install.sh
     chdir: "{{ ansible_user_dir }}"
     creates: /usr/local/bin/k3s
   become: true
+
+- name: Create folder folder for default kubeconfig
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.kube"
+    state: directory
+    mode: "0755"
 
 - name: Copy k3s.yaml to default kubeconfig location
   ansible.builtin.copy:

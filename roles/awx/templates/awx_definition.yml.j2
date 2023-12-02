@@ -7,7 +7,7 @@ metadata:
 spec:
 {% if service_type == 'nodeport' %}
   service_type: NodePort
-  nodeport_port: {{ exposed_node_port }}
+  nodeport_port: {{ awx_instance_port }}
 {% endif %}
 {% if service_type == 'ingress' %}
   ingress_type: ingress

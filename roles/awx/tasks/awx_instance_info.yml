@@ -15,6 +15,6 @@
 - name: Output login info
   ansible.builtin.debug:
     msg: |
-      AWX UI is available at 'http://{{ ansible_default_ipv4.address }}'
+      AWX UI is available at 'http://{{ ansible_default_ipv4.address }}:{{ awx_instance_port }}'
       Login with username 'admin' and password '{{ admin_secret['resources'][0]['data']['password'] | b64decode }}'
   when: admin_secret.resources | length > 0

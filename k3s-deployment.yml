@@ -1,6 +1,0 @@
----
-
-- name: Deploy K3S
-  hosts: k3s_server
-  roles:
-    - k3s-deployment

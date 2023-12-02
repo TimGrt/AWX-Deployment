@@ -1,6 +1,0 @@
----
-
-- name: Deploy AWX operator and instance
-  hosts: k3s_server
-  roles:
-    - awx

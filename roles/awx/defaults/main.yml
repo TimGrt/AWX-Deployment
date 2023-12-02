@@ -13,7 +13,7 @@ kustomize_directory: "{{ ansible_user_dir }}"
 
 # Service/Network-related variables
 service_type: nodeport
-exposed_node_port: 30080
+awx_instance_port: 30080
 awx_endpoint_name: awx.demo.com
 
 # Storage-related variables
