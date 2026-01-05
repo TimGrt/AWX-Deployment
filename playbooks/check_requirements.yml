@@ -1,0 +1,7 @@
+---
+
+- name: Check requirements
+  hosts: localhost
+  connection: local
+  roles:
+    - requirements_check

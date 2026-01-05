@@ -1,0 +1,4 @@
+---
+
+- ansible.builtin.import_playbook: playbooks/kind_deployment.yml # noqa name[play]
+- ansible.builtin.import_playbook: playbooks/awx_deployment.yml # noqa name[play]

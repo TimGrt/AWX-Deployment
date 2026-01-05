@@ -1,0 +1,16 @@
+---
+- name: Get latest kind release info
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/kubernetes-sigs/kind/releases/latest
+    return_content: true
+  register: kind_release_info
+
+- name: Set fact for latest kind release version
+  ansible.builtin.set_fact:
+    kind_latest_release_version: "{{ kind_release_info.json.name }}"
+
+- name: Download latest kind release binary ({{ kind_latest_release_version }}) to {{ executable_path }} # noqa name[template]
+  ansible.builtin.get_url:
+    url: https://kind.sigs.k8s.io/dl/{{ kind_latest_release_version }}/kind-linux-{{ architecture_translation[ansible_facts.architecture] }}
+    dest: "{{ executable_path }}/kind"
+    mode: "0744"

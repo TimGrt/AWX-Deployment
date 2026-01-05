@@ -1,0 +1,16 @@
+---
+- name: Get release info for latest kubectl version
+  ansible.builtin.uri:
+    url: https://dl.k8s.io/release/stable.txt
+    return_content: true
+  register: kubectl_release_info
+
+- name: Set fact for latest kubectl release version
+  ansible.builtin.set_fact:
+    kubectl_latest_release_version: "{{ kubectl_release_info.content }}"
+
+- name: Download latest kubectl release binary ({{ kubectl_latest_release_version }}) to {{ executable_path }} # noqa name[template]
+  ansible.builtin.get_url:
+    url: https://dl.k8s.io/release/{{ kubectl_latest_release_version }}/bin/linux/{{ architecture_translation[ansible_facts.architecture] }}/kubectl
+    dest: "{{ executable_path }}/kubectl"
+    mode: "0744"

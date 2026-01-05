@@ -1,0 +1,8 @@
+---
+# Path where kind, kubectl and other binaries will be installed
+executable_path: "{{ ansible_user_dir }}/.local/bin"
+
+# Downloading binaries often requires a translation from system architecture to binary naming conventions
+architecture_translation:
+  x86_64: "amd64"
+  aarch64: "arm64"

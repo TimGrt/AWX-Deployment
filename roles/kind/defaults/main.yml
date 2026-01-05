@@ -1,0 +1,14 @@
+---
+architecture_translation:
+  x86_64: "amd64"
+  aarch64: "arm64"
+
+# Kind executable will be installed to this path
+executable_path: "{{ ansible_user_dir }}/.local/bin"
+
+delete_kind_cluster: false
+kind_cluster_config_files_path: "{{ ansible_config_file | dirname }}/kubernetes_cluster_configs"
+
+awx_namespace: awx
+awx_instance_name: awx-demo
+awx_service_port: 32000

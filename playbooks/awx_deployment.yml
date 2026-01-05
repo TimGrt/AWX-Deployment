@@ -1,0 +1,8 @@
+---
+
+- name: Deploy AWX operator and instance on Kubernetes
+  hosts: localhost
+  connection: local
+  roles:
+    - awx_operator
+    - awx_instance

@@ -1,0 +1,16 @@
+---
+- name: Deploy Kind cluster
+  hosts: localhost
+  connection: local
+  pre_tasks:
+    - name: Delete kind cluster
+      ansible.builtin.import_role:
+        name: kind
+        tasks_from: kind_delete.yml
+      when: '"delete-kind" in ansible_run_tags'
+      tags:
+        - delete-kind
+  roles:
+    - requirements_check
+    - kubectl
+    - kind

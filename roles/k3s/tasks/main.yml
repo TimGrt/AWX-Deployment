@@ -1,0 +1,16 @@
+---
+
+- ansible.builtin.import_tasks: requirements.yml # noqa name[missing]
+
+- ansible.builtin.import_tasks: server_deployment.yml # noqa name[missing]
+  when: inventory_hostname in groups[k3s_server_group]
+
+- ansible.builtin.import_tasks: agent_deployment.yml # noqa name[missing]
+  when:
+    - groups[k3s_agent_group] is defined
+    - groups[k3s_agent_group] | length > 0
+
+- ansible.builtin.import_tasks: uninstall.yml # noqa name[missing]
+  when: '"uninstall" in ansible_run_tags'
+  tags:
+    - uninstall

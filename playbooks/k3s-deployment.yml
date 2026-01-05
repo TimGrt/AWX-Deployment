@@ -1,6 +1,0 @@
----
-
-- name: Deploy k3s-server
-  hosts: kubernetes_cluster
-  roles:
-    - k3s-deployment

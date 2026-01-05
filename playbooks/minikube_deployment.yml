@@ -1,0 +1,6 @@
+---
+
+- name: Deploy minikube
+  hosts: minikube_host
+  roles:
+    - minikube

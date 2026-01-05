@@ -1,0 +1,6 @@
+---
+
+- name: Deploy K3S cluster
+  hosts: kubernetes_cluster
+  roles:
+    - k3s

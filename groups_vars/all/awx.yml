@@ -1,0 +1,4 @@
+---
+awx_namespace: awx
+awx_instance_name: awx-demo
+awx_service_port: 32000

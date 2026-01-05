@@ -1,0 +1,8 @@
+---
+- name: Deploy AWX
+  hosts: localhost
+  connection: local
+  roles:
+    - requirements_check
+    - awx_operator
+    - awx_instance

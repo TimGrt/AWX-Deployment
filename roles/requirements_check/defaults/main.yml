@@ -1,0 +1,3 @@
+---
+requirements_files_path: "{{ ansible_config_file | dirname }}"
+executable_path: "{{ ansible_user_dir }}/.local/bin"

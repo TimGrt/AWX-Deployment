@@ -1,0 +1,2 @@
+---
+kubernetes_config_files_path: "{{ ansible_config_file | dirname }}/kubernetes_cluster_configs"

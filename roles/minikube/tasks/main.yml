@@ -1,0 +1,20 @@
+---
+- ansible.builtin.import_tasks: install_minikube.yml # noqa name[missing]
+  tags:
+    - install
+    - minikube
+
+- ansible.builtin.import_tasks: start_minikube.yml # noqa name[missing]
+  tags:
+    - start
+    - minikube
+
+- ansible.builtin.import_tasks: kubectl.yml # noqa name[missing]
+  tags:
+    - kubectl
+    - minikube
+
+- ansible.builtin.import_tasks: delete_minikube_cluster.yml # noqa name[missing]
+  when: '"delete-minikube" in ansible_run_tags'
+  tags:
+    - delete-minikube

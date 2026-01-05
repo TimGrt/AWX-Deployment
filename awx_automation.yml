@@ -1,0 +1,59 @@
+---
+
+- name: Deploy minikube
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Job template
+      awx.awx.job_template:
+        controller_host: "http://localhost:37933"
+        controller_username: "admin"
+        controller_password: "V2KegE7XA5DrwK2V8WPDomfpE57jL75F"
+        name: Demo Job Template
+        job_type: "run"
+        job_tags: "comparison-checks, hardware-cpu-check, hardware-fans-check, hardware-memory-check, hardware-modules-check, hardware-power-check, hardware-storage-check, hardware-temp-check, layer2-blocked-ports-check, layer2-cdp-neighbors-check, layer2-interface-flapping-check, layer2-lldp-neighbors-check, layer2-spanning-tree-check, layer2-vlan-check, layer3-bgp-neighbors-check, layer3-hsrp-check, layer3-ospf-neighbors-check, vpc-consistency-check, vpc-consistency-global-check, vpc-peer-keepalive-check, vpc-split-brain-check"
+        ask_tags_on_launch: true
+        ask_skip_tags_on_launch: true
+        organization: "Default"
+        inventory: Demo Inventory
+        project: "Demo Project"
+        playbook: "hello_world.yml"
+        credentials:
+          - "Demo Credential"
+        state: "present"
+        survey_enabled: true
+        survey_spec:
+          name: "Demo Survey"
+          description: ""
+          spec:
+            - question_name: "NX-OS device"
+              question_description: "Hostname of the NX-OS device to be upgraded, must be present in Netbox"
+              type: "text"
+              required: true
+              variable: "survey_input_target_devices"
+            - question_name: "NX-OS Username"
+              question_description: "Username to authenticate with NX-OS device, if not possible with AWX credential"
+              type: "text"
+              required: false
+              variable: "survey_input_nxos_username"
+            - question_name: "NX-OS Password"
+              question_description: "Password to authenticate with NX-OS device, if not possible with AWX credential"
+              type: "password"
+              required: false
+              variable: "survey_input_nxos_password"
+            - question_name: "NX-OS target image"
+              question_description: "Image name for NX-OS upgrade, e.g. 'nxos64-cs.10.4.4.M.bin'. This image must already be present on the device."
+              type: "text"
+              required: true
+              variable: "survey_input_target_image"
+            - question_name: Upgrade mode
+              question_description: "Different upgrade modes, can be used to skip certain playbook functionality."
+              type: multiplechoice
+              choices:
+                - VPC Primary & Secondary
+                - Only provided device, ignore VPC Peer-Device
+                - Blind upgrade, no checks/backup/isolation
+              default: VPC Primary & Secondary
+              required: false
+              variable: survey_input_upgrade_mode

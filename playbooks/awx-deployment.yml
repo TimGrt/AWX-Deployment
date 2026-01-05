@@ -1,6 +1,0 @@
----
-
-- name: Deploy AWX operator and instance on Kubernetes
-  hosts: kubernetes_control_plane
-  roles:
-    - awx

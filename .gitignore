@@ -1,1 +1,19 @@
+# Ansible Cache folder
+.ansible/
+
+# Personal VScode settings
 .vscode/
+
+# Folder created during build process from ansible-builder
+context/
+
+# Log files and folders from ansible-navigator
+logs/
+*.log
+
+# Python Cache and build stuff
+__pycache__/
+*.py[cod]
+
+# Temporary files created by playbook
+kubernetes_cluster_configs/

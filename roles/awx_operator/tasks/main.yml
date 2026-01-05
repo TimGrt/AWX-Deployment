@@ -1,0 +1,32 @@
+---
+- name: Get latest AWX operator release
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/ansible/awx-operator/releases/latest
+    return_content: true
+  register: awx_operator_latest_release_info
+
+- name: Set fact for latest AWX operator release version
+  ansible.builtin.set_fact:
+    awx_operator_latest_release_version: "{{ awx_operator_latest_release_info.json.name }}"
+
+- name: Deploy kustomization.yaml template
+  ansible.builtin.template:
+    src: kustomization.yaml.j2
+    dest: "{{ kubernetes_config_files_path }}/kustomization.yaml"
+    mode: "0644"
+
+- name: Apply ressources from kustomize directory
+  ansible.builtin.command:
+    cmd: kubectl apply -k {{ kubernetes_config_files_path }}
+  register: apply_ressources_result
+  changed_when: not (apply_ressources_result.stdout_lines | select('search', 'unchanged'))
+
+- name: Wait for running state of awx-operator-controller-manager pods (timeout set to 5 minutes)
+  kubernetes.core.k8s_info:
+    kind: Deployment
+    namespace: "{{ awx_namespace }}"
+    name: awx-operator-controller-manager
+    wait: true
+    wait_sleep: 10
+    wait_timeout: 300
+  register: awx_operator_controller_manager_pods

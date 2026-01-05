@@ -1,0 +1,7 @@
+---
+- name: Ensure path for executables is in PATH
+  ansible.builtin.assert:
+    that:
+      - ansible_env.PATH is search(executable_path)
+    fail_msg: "The path {{ executable_path }} is not in the PATH environment variable."
+    quiet: true

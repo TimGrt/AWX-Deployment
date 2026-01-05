@@ -1,0 +1,24 @@
+---
+
+- name: Create folder for kind cluster config files
+  ansible.builtin.file:
+    path: "{{ kind_cluster_config_files_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Create kind cluster config file
+  ansible.builtin.template:
+    src: kind.config.j2
+    dest: "{{ kind_cluster_config_files_path }}/kind.config"
+    mode: "0644"
+
+- name: Get kind cluster info
+  ansible.builtin.command:
+    cmd: kind get clusters -q
+  register: kind_clusters_info
+  changed_when: false
+
+- name: Create kind cluster # noqa no-changed-when
+  ansible.builtin.command:
+    cmd: kind create cluster --config={{ kind_cluster_config_files_path }}/kind.config
+  when: kind_clusters_info.stdout_lines | length == 0

@@ -1,0 +1,7 @@
+---
+
+- name: Delete kind cluster
+  ansible.builtin.command:
+    cmd: kind delete cluster
+  register: delete_result
+  changed_when: delete_result.stderr_lines.2 is defined

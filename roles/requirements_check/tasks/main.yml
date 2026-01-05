@@ -1,0 +1,9 @@
+---
+
+- ansible.builtin.import_tasks: galaxy_requirements.yml # noqa name[missing]
+
+- ansible.builtin.import_tasks: python_requirements.yml # noqa name[missing]
+
+- ansible.builtin.import_tasks: container_runtime.yml # noqa name[missing]
+
+- ansible.builtin.import_tasks: executables_path.yml # noqa name[missing]

@@ -1,0 +1,5 @@
+---
+- ansible.builtin.import_tasks: awx_instance_installation.yml # noqa name[missing]
+- ansible.builtin.import_tasks: awx_instance_info.yml # noqa name[missing]
+  tags:
+    - awx-admin-secret

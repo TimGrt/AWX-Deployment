@@ -1,0 +1,32 @@
+---
+
+- name: Test for docker runtime
+  ansible.builtin.command:
+    cmd: which docker
+  register: docker_check
+  changed_when: false
+  failed_when: docker_check.rc > 1
+
+- name: Test for podman runtime
+  ansible.builtin.command:
+    cmd: which podman
+  register: podman_check
+  changed_when: false
+  failed_when: podman_check.rc > 1
+  when: docker_check.stdout | length == 0
+
+- name: Test for nerdctl runtime
+  ansible.builtin.command:
+    cmd: which nerdctl
+  register: nerdctl_check
+  changed_when: false
+  failed_when: nerdctl_check.rc > 1
+  when: (docker_check.stdout | length) == 0 and (podman_check.stdout | length) == 0
+
+- name: Abort if no container runtime is found
+  ansible.builtin.fail:
+    msg: No container runtime found! Please install Docker, Podman or Nerdctl.
+  when:
+    - (docker_check.stdout | length) == 0
+    - (podman_check.stdout | length) == 0
+    - (nerdctl_check.stdout | length) == 0

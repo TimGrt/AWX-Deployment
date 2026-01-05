@@ -1,0 +1,3 @@
+---
+- ansible.builtin.import_tasks: kind_install.yml # noqa name[missing]
+- ansible.builtin.import_tasks: kind_cluster.yml # noqa name[missing]

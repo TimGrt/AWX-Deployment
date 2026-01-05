@@ -1,5 +1,0 @@
----
-
-- ansible.builtin.import_tasks: galaxy-requirements.yml # noqa name[missing]
-
-- ansible.builtin.import_tasks: python-requirements.yml # noqa name[missing]

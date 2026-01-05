@@ -1,0 +1,20 @@
+---
+
+- name: Get AWX admin secret
+  kubernetes.core.k8s_info:
+    kind: Secret
+    namespace: "{{ awx_namespace }}"
+    name: "{{ awx_instance_name }}-admin-password"
+  register: admin_secret
+
+- name: Output failure message
+  ansible.builtin.debug:
+    msg: No admin secret found! Is AWX already deployed?
+  when: admin_secret.resources | length == 0
+
+- name: Output login info
+  ansible.builtin.debug:
+    msg: |
+      AWX UI is available at 'http://{{ ansible_default_ipv4.address }}:{{ awx_service_port }}'
+      Login with username 'admin' and password '{{ admin_secret['resources'][0]['data']['password'] | b64decode }}'
+  when: admin_secret.resources | length > 0
