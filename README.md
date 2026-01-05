@@ -7,6 +7,10 @@ The Ansible content in this repository deploys AWX on Kubernetes, by default on 
 > [!NOTE]
 > The content is tested and developed with Ubuntu 24.04+ on WSL.
 
+> [!IMPORTANT]
+> **The AWX deployment is for testing purposes only!**
+> **Do not use this in production!**
+
 ## Requirements
 
 A managed node with sufficient CPU and memory resources is necessary, at least:
