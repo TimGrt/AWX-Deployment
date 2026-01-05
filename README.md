@@ -1,6 +1,6 @@
 # AWX Deployment
 
-[![Ansible Lint](https://github.com/TimGrt/AWX-on-Minikube/actions/workflows/ci.yml/badge.svg)](https://github.com/TimGrt/AWX-on-Minikube/actions/workflows/ci.yml) [![CodeFactor](https://www.codefactor.io/repository/github/timgrt/awx-on-minikube/badge)](https://www.codefactor.io/repository/github/timgrt/awx-on-minikube)
+[![Ansible Lint](https://github.com/TimGrt/AWX-Deployment/actions/workflows/ci.yml/badge.svg)](https://github.com/TimGrt/AWX-Deployment/actions/workflows/ci.yml) [![CodeFactor](https://www.codefactor.io/repository/github/timgrt/awx-deployment/badge)](https://www.codefactor.io/repository/github/timgrt/awx-deployment)
 
 The Ansible content in this repository deploys AWX on Kubernetes, by default on a single-node Kind-Cluster.
 
